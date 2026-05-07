@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Recurse \"C:\\\\Hemsidor\\\\SkyltarOMontering\\\\.claude\")",
+      "Bash(Select-Object FullName)",
+      "mcp__ide__getDiagnostics"
+    ]
+  }
+}

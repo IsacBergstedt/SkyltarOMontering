@@ -1,36 +1,47 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
-import { MapPin, Phone, Mail, Star, CheckCircle, ArrowRight, ChevronDown, Users, Zap } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
+import { MapPin, Phone, Mail, CheckCircle, ArrowRight, Users, Zap } from 'lucide-react';
+
+const heroContainer: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } }
+};
+
+const heroItem: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } }
+};
+
+const heroRight: Variants = {
+  hidden: { opacity: 0, x: 30 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: 'easeOut', delay: 0.2 } }
+};
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+};
+
+const cardContainer: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } }
+};
+
+const cardItem: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+};
 
 export default function Home() {
-  const [expandedService, setExpandedService] = useState(null);
-  const [visibleElements, setVisibleElements] = useState(new Set());
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const elements = document.querySelectorAll('[data-animate]');
-      elements.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight * 0.75;
-        if (isVisible) {
-          setVisibleElements(prev => new Set(prev).add(el.id));
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Modern color scheme: Deep teal, bright accent yellow, clean whites
   const colors = {
-    primary: '#0D5E6F',      // Deep teal
-    accent: '#FFC107',        // Golden yellow
-    secondary: '#1A8FA3',     // Lighter teal
-    light: '#E8F5F7',         // Very light teal
-    dark: '#092C38'           // Very dark teal
+    primary: '#0D5E6F',
+    accent: '#FFC107',
+    secondary: '#1A8FA3',
+    light: '#E8F5F7',
+    dark: '#092C38'
   };
 
   const services = [
@@ -73,35 +84,9 @@ export default function Home() {
   return (
     <div style={{ fontFamily: 'var(--font-sans)', color: 'var(--color-text-primary)' }}>
       <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
         @keyframes glow {
-          0%, 100% {
-            box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.1);
-          }
-          50% {
-            box-shadow: 0 0 0 8px rgba(255, 193, 7, 0);
-          }
+          0%, 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.1); }
+          50% { box-shadow: 0 0 0 8px rgba(255, 193, 7, 0); }
         }
 
         .primary-button {
@@ -160,6 +145,16 @@ export default function Home() {
           color: ${colors.accent};
           flex-shrink: 0;
         }
+
+        .service-card:hover {
+          border-color: ${colors.accent};
+          transition: border-color 0.2s ease;
+        }
+
+        .testimonial-card:hover {
+          border-color: ${colors.accent};
+          transition: border-color 0.2s ease;
+        }
       `}</style>
 
       {/* Header/Nav Bar */}
@@ -178,10 +173,10 @@ export default function Home() {
           Skyltar & Montering
         </div>
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <a href="#services" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={e => e.target.style.color = colors.primary} onMouseLeave={e => e.target.style.color = 'var(--color-text-secondary)'}>
+          <a href="#services" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={e => (e.target as HTMLElement).style.color = colors.primary} onMouseLeave={e => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}>
             Tjänster
           </a>
-          <a href="#projects" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={e => e.target.style.color = colors.primary} onMouseLeave={e => e.target.style.color = 'var(--color-text-secondary)'}>
+          <a href="#projects" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={e => (e.target as HTMLElement).style.color = colors.primary} onMouseLeave={e => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}>
             Projekt
           </a>
           <button className="primary-button" style={{ fontSize: '0.95rem', padding: '10px 24px' }}>
@@ -202,52 +197,65 @@ export default function Home() {
         minHeight: '700px'
       }}>
         {/* Left Content */}
-        <div>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: colors.light,
-            padding: '10px 18px',
-            borderRadius: '8px',
-            marginBottom: '1.5rem',
-            color: colors.primary,
-            fontWeight: 600,
-            fontSize: '0.9rem',
-            letterSpacing: '0.5px'
-          }}>
+        <motion.div
+          variants={heroContainer}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div
+            variants={heroItem}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: colors.light,
+              padding: '10px 18px',
+              borderRadius: '8px',
+              marginBottom: '1.5rem',
+              color: colors.primary,
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              letterSpacing: '0.5px'
+            }}
+          >
             <Zap size={16} />
             Professionell & pålitlig
-          </div>
+          </motion.div>
 
-          <h1 style={{
-            fontSize: '3rem',
-            fontWeight: 700,
-            lineHeight: 1.15,
-            marginBottom: '1.2rem',
-            animation: 'fadeInUp 0.8s ease-out',
-            color: colors.dark
-          }}>
+          <motion.h1
+            variants={heroItem}
+            style={{
+              fontSize: '3rem',
+              fontWeight: 700,
+              lineHeight: 1.15,
+              marginBottom: '1.2rem',
+              color: colors.dark
+            }}
+          >
             Skyltar som syns
-          </h1>
+          </motion.h1>
 
-          <p style={{
-            fontSize: '1.15rem',
-            color: 'var(--color-text-secondary)',
-            marginBottom: '2rem',
-            lineHeight: 1.7,
-            animation: 'fadeInUp 0.8s ease-out 0.1s backwards'
-          }}>
+          <motion.p
+            variants={heroItem}
+            style={{
+              fontSize: '1.15rem',
+              color: 'var(--color-text-secondary)',
+              marginBottom: '2rem',
+              lineHeight: 1.7
+            }}
+          >
             Vi skapar och monterar skyltar som får ditt företag att synas. Med över 15 års erfarenhet erbjuder vi allt från design till professionell installation i Stockholm och hela Sverige.
-          </p>
+          </motion.p>
 
-          <div style={{
-            display: 'flex',
-            gap: '1rem',
-            marginBottom: '2.5rem',
-            animation: 'fadeInUp 0.8s ease-out 0.2s backwards',
-            flexWrap: 'wrap'
-          }}>
+          <motion.div
+            variants={heroItem}
+            style={{
+              display: 'flex',
+              gap: '1rem',
+              marginBottom: '2.5rem',
+              flexWrap: 'wrap'
+            }}
+          >
             <button className="accent-button">
               Boka konsultation <ArrowRight size={18} />
             </button>
@@ -266,23 +274,18 @@ export default function Home() {
               gap: '8px',
               letterSpacing: '0.3px'
             }}
-            onMouseEnter={e => {
-              e.target.style.background = colors.light;
-            }}
-            onMouseLeave={e => {
-              e.target.style.background = 'white';
-            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = colors.light; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'white'; }}
             >
               <Phone size={18} /> 070-XXXXXXX
             </button>
-          </div>
+          </motion.div>
 
           {/* Trust Badges */}
-          <div style={{
-            display: 'grid',
-            gap: '1rem',
-            animation: 'fadeInUp 0.8s ease-out 0.3s backwards'
-          }}>
+          <motion.div
+            variants={heroItem}
+            style={{ display: 'grid', gap: '1rem' }}
+          >
             <div className="trust-badge">
               <CheckCircle size={20} />
               <span><strong>15+ år erfarenhet</strong> med skyltning och montering</span>
@@ -295,13 +298,15 @@ export default function Home() {
               <MapPin size={20} />
               <span><strong>Stockholm hemort</strong>, serviceerar hela Sverige</span>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Right Image Placeholder */}
-        <div style={{
-          animation: 'slideInRight 0.8s ease-out 0.2s backwards'
-        }}>
+        <motion.div
+          variants={heroRight}
+          initial="hidden"
+          animate="visible"
+        >
           <div style={{
             background: `linear-gradient(135deg, ${colors.light} 0%, ${colors.light} 100%)`,
             borderRadius: '12px',
@@ -324,7 +329,7 @@ export default function Home() {
               </span>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Services Section */}
@@ -334,17 +339,21 @@ export default function Home() {
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 id="services" data-animate style={{
-              fontSize: '2.2rem',
-              fontWeight: 700,
-              marginBottom: '1rem',
-              opacity: visibleElements.has('services') ? 1 : 0,
-              transform: visibleElements.has('services') ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'all 0.6s ease-out',
-              color: colors.dark
-            }}>
+            <motion.h2
+              id="services"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              style={{
+                fontSize: '2.2rem',
+                fontWeight: 700,
+                marginBottom: '1rem',
+                color: colors.dark
+              }}
+            >
               Vad vi erbjuder
-            </h2>
+            </motion.h2>
             <p style={{
               fontSize: '1.1rem',
               color: 'var(--color-text-secondary)',
@@ -355,39 +364,31 @@ export default function Home() {
             </p>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '2rem'
-          }}>
-            {services.map((service, idx) => (
-              <div
+          <motion.div
+            variants={cardContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '2rem'
+            }}
+          >
+            {services.map((service) => (
+              <motion.div
                 key={service.id}
-                id={`service-${service.id}`}
-                data-animate
+                variants={cardItem}
+                className="service-card"
+                whileHover={{ y: -8, boxShadow: '0 16px 32px rgba(13, 94, 111, 0.1)' }}
                 style={{
                   background: 'var(--color-background-primary)',
                   padding: '2.5rem',
                   borderRadius: '12px',
                   border: `2px solid ${colors.light}`,
                   cursor: 'pointer',
-                  opacity: visibleElements.has(`service-${service.id}`) ? 1 : 0,
-                  transform: visibleElements.has(`service-${service.id}`) ? 'translateY(0)' : 'translateY(20px)',
-                  transition: `all 0.6s ease-out ${idx * 0.1}s`,
                   position: 'relative',
                   overflow: 'hidden'
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = colors.accent;
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = `0 16px 32px rgba(13, 94, 111, 0.1)`;
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = colors.light;
-                  if (visibleElements.has(`service-${service.id}`)) {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }
-                  e.currentTarget.style.boxShadow = 'none';
                 }}
               >
                 {/* Accent line */}
@@ -420,11 +421,7 @@ export default function Home() {
                 }}>
                   {service.description}
                 </p>
-                <ul style={{
-                  listStyle: 'none',
-                  padding: 0,
-                  margin: 0
-                }}>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                   {service.features.map((feature, i) => (
                     <li key={i} style={{
                       fontSize: '0.9rem',
@@ -445,9 +442,9 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -458,17 +455,21 @@ export default function Home() {
         margin: '0 auto'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <h2 id="projects" data-animate style={{
-            fontSize: '2.2rem',
-            fontWeight: 700,
-            marginBottom: '1rem',
-            opacity: visibleElements.has('projects') ? 1 : 0,
-            transform: visibleElements.has('projects') ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'all 0.6s ease-out',
-            color: colors.dark
-          }}>
+          <motion.h2
+            id="projects"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            style={{
+              fontSize: '2.2rem',
+              fontWeight: 700,
+              marginBottom: '1rem',
+              color: colors.dark
+            }}
+          >
             Tidigare projekt
-          </h2>
+          </motion.h2>
           <p style={{
             fontSize: '1.1rem',
             color: 'var(--color-text-secondary)',
@@ -479,35 +480,29 @@ export default function Home() {
           </p>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '2rem'
-        }}>
+        <motion.div
+          variants={cardContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2rem'
+          }}
+        >
           {testimonials.map((item, idx) => (
-            <div
+            <motion.div
               key={idx}
-              id={`testimonial-${idx}`}
-              data-animate
+              variants={cardItem}
+              className="testimonial-card"
+              whileHover={{ y: -4 }}
               style={{
                 background: 'var(--color-background-secondary)',
                 padding: '2rem',
                 borderRadius: '12px',
                 border: `1px solid var(--color-border-tertiary)`,
-                opacity: visibleElements.has(`testimonial-${idx}`) ? 1 : 0,
-                transform: visibleElements.has(`testimonial-${idx}`) ? 'translateY(0)' : 'translateY(20px)',
-                transition: `all 0.6s ease-out ${idx * 0.1}s`,
                 cursor: 'pointer'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = colors.accent;
-                e.currentTarget.style.transform = 'translateY(-4px)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'var(--color-border-tertiary)';
-                if (visibleElements.has(`testimonial-${idx}`)) {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }
               }}
             >
               <div style={{ marginBottom: '1rem', display: 'flex', gap: '4px' }}>
@@ -529,9 +524,9 @@ export default function Home() {
               }}>
                 {item.category}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* CTA Section */}
@@ -581,12 +576,8 @@ export default function Home() {
               fontSize: '1rem',
               letterSpacing: '0.3px'
             }}
-            onMouseEnter={e => {
-              e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-            }}
-            onMouseLeave={e => {
-              e.target.style.background = 'transparent';
-            }}
+            onMouseEnter={e => { (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.1)'; }}
+            onMouseLeave={e => { (e.target as HTMLElement).style.background = 'transparent'; }}
             >
               Ring 070-XXXXXXX
             </button>
