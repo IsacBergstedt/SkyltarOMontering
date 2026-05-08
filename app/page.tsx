@@ -1,9 +1,11 @@
 'use client'
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { LazyMotion, m } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { MapPin, Phone, Mail, CheckCircle, ArrowRight, Users, Zap } from 'lucide-react';
+
+const loadFeatures = () => import('framer-motion').then(res => res.domAnimation);
+import { MapPin, Phone, Mail, CheckCircle, ArrowRight, Users, Zap, Building2, Layers, Wrench, CalendarDays, ImageIcon, Check, ExternalLink } from 'lucide-react';
 
 const heroContainer: Variants = {
   hidden: {},
@@ -49,39 +51,43 @@ export default function Home() {
       id: 'signs',
       title: 'Skyltar & Vägvisare',
       description: 'Högkvalitativa skyltar för företag och institutioner. Från design till montering.',
-      icon: '🏢',
+      Icon: Building2,
       features: ['Fasadskyltar', 'Belyst neon', 'Trä och metall']
     },
     {
       id: 'foiling',
       title: 'Skyltning & Foliering',
       description: 'Professionell foliering av stora fönster, väggar och ytor för butiker och event.',
-      icon: '🪟',
+      Icon: Layers,
       features: ['Fönsterfoliering', 'Eventdekorering', 'Reklamytor']
     },
     {
       id: 'installation',
       title: 'Montering & Installation',
       description: 'Säker installation på höga ytor och komplexa projekt med erfarenhet.',
-      icon: '🔧',
+      Icon: Wrench,
       features: ['Högt monterade skyltar', 'Väggmontage', 'Komplex riggning']
     },
     {
       id: 'events',
       title: 'Event & Tillfällig Skyltning',
       description: 'Skyltning och dekorering för event, sportevenemang och special occasions.',
-      icon: '🎉',
+      Icon: CalendarDays,
       features: ['Sportevents', 'Företagsevent', 'Tillfällig markering']
     }
   ];
 
-  const testimonials = [
-    { name: 'Telia Knight Event', category: 'Event Signage', rating: 5 },
-    { name: 'Sverige Hockey', category: 'Sports Signage', rating: 5 },
-    { name: 'Business Directory', category: 'Façade Signs', rating: 5 }
+  const projects = [
+    { name: 'Telia Knight Event', category: 'Eventskyltning', src: null },
+    { name: 'Sverige Hockey', category: 'Sportarena', src: null },
+    { name: 'Fasadskylt, Södermalm', category: 'Fasadmontering', src: null },
+    { name: 'Fönsterfoliering, Kungsholmen', category: 'Foliering', src: null },
+    { name: 'Företagsevent', category: 'Tillfällig skyltning', src: null },
+    { name: 'Skyltsystem, Vasastan', category: 'Vägvisningssystem', src: null },
   ];
 
   return (
+    <LazyMotion features={loadFeatures}>
     <div style={{ fontFamily: 'var(--font-sans)', color: 'var(--color-text-primary)' }}>
       <style>{`
         @keyframes glow {
@@ -197,12 +203,12 @@ export default function Home() {
         minHeight: '700px'
       }}>
         {/* Left Content */}
-        <motion.div
+        <m.div
           variants={heroContainer}
           initial="hidden"
           animate="visible"
         >
-          <motion.div
+          <m.div
             variants={heroItem}
             style={{
               display: 'inline-flex',
@@ -220,9 +226,9 @@ export default function Home() {
           >
             <Zap size={16} />
             Professionell & pålitlig
-          </motion.div>
+          </m.div>
 
-          <motion.h1
+          <m.h1
             variants={heroItem}
             style={{
               fontSize: '3rem',
@@ -233,9 +239,9 @@ export default function Home() {
             }}
           >
             Skyltar som syns
-          </motion.h1>
+          </m.h1>
 
-          <motion.p
+          <m.p
             variants={heroItem}
             style={{
               fontSize: '1.15rem',
@@ -245,9 +251,9 @@ export default function Home() {
             }}
           >
             Vi skapar och monterar skyltar som får ditt företag att synas. Med över 15 års erfarenhet erbjuder vi allt från design till professionell installation i Stockholm och hela Sverige.
-          </motion.p>
+          </m.p>
 
-          <motion.div
+          <m.div
             variants={heroItem}
             style={{
               display: 'flex',
@@ -279,10 +285,10 @@ export default function Home() {
             >
               <Phone size={18} /> 070-XXXXXXX
             </button>
-          </motion.div>
+          </m.div>
 
           {/* Trust Badges */}
-          <motion.div
+          <m.div
             variants={heroItem}
             style={{ display: 'grid', gap: '1rem' }}
           >
@@ -298,11 +304,11 @@ export default function Home() {
               <MapPin size={20} />
               <span><strong>Stockholm hemort</strong>, serviceerar hela Sverige</span>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
 
         {/* Right Image Placeholder */}
-        <motion.div
+        <m.div
           variants={heroRight}
           initial="hidden"
           animate="visible"
@@ -321,15 +327,19 @@ export default function Home() {
           }}>
             <div style={{
               textAlign: 'center',
-              color: colors.secondary
+              color: colors.secondary,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '1rem'
             }}>
-              📸<br/>
-              <span style={{ fontSize: '0.8rem', marginTop: '1rem', display: 'block', color: 'var(--color-text-secondary)' }}>
+              <ImageIcon size={48} strokeWidth={1} />
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
                 Lägg till ditt arbete här
               </span>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </section>
 
       {/* Services Section */}
@@ -339,7 +349,7 @@ export default function Home() {
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <motion.h2
+            <m.h2
               id="services"
               variants={fadeUp}
               initial="hidden"
@@ -353,7 +363,7 @@ export default function Home() {
               }}
             >
               Vad vi erbjuder
-            </motion.h2>
+            </m.h2>
             <p style={{
               fontSize: '1.1rem',
               color: 'var(--color-text-secondary)',
@@ -364,7 +374,7 @@ export default function Home() {
             </p>
           </div>
 
-          <motion.div
+          <m.div
             variants={cardContainer}
             initial="hidden"
             whileInView="visible"
@@ -376,7 +386,7 @@ export default function Home() {
             }}
           >
             {services.map((service) => (
-              <motion.div
+              <m.div
                 key={service.id}
                 variants={cardItem}
                 className="service-card"
@@ -402,8 +412,8 @@ export default function Home() {
                   borderRadius: '12px 12px 0 0'
                 }} />
 
-                <div style={{ fontSize: '2.8rem', marginBottom: '1rem', marginTop: '0.5rem' }}>
-                  {service.icon}
+                <div style={{ marginBottom: '1rem', marginTop: '0.5rem', color: colors.primary }}>
+                  <service.Icon size={32} strokeWidth={1.5} />
                 </div>
                 <h3 style={{
                   fontSize: '1.2rem',
@@ -430,103 +440,98 @@ export default function Home() {
                       marginBottom: '0.6rem',
                       position: 'relative'
                     }}>
-                      <span style={{
-                        position: 'absolute',
-                        left: 0,
-                        color: colors.accent,
-                        fontWeight: 'bold'
-                      }}>
-                        ✓
-                      </span>
+                      <Check size={13} strokeWidth={2.5} style={{ position: 'absolute', left: 0, top: '2px', color: colors.primary }} />
                       {feature}
                     </li>
                   ))}
                 </ul>
-              </motion.div>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
-      {/* Social Proof / Projects */}
-      <section style={{
-        padding: '5rem 2rem',
-        maxWidth: '1200px',
-        margin: '0 auto'
-      }}>
+      {/* Portfolio / Projects */}
+      <style>{`
+        .portfolio-card { position: relative; overflow: hidden; border-radius: 10px; cursor: pointer; background: ${colors.light}; }
+        .portfolio-overlay {
+          position: absolute; inset: 0;
+          background: linear-gradient(to top, rgba(9,44,56,0.85) 0%, rgba(9,44,56,0.2) 55%, transparent 100%);
+          opacity: 0; transition: opacity 0.3s ease;
+          display: flex; flex-direction: column; justify-content: flex-end; padding: 1.25rem;
+        }
+        .portfolio-card:hover .portfolio-overlay { opacity: 1; }
+        .portfolio-card:hover .portfolio-placeholder { transform: scale(1.04); transition: transform 0.4s ease; }
+        .portfolio-placeholder { transition: transform 0.4s ease; }
+      `}</style>
+
+      <section style={{ padding: '5rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <motion.h2
+          <m.h2
             id="projects"
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            style={{
-              fontSize: '2.2rem',
-              fontWeight: 700,
-              marginBottom: '1rem',
-              color: colors.dark
-            }}
+            style={{ fontSize: '2.2rem', fontWeight: 700, marginBottom: '1rem', color: colors.dark }}
           >
             Tidigare projekt
-          </motion.h2>
-          <p style={{
-            fontSize: '1.1rem',
-            color: 'var(--color-text-secondary)',
-            maxWidth: '600px',
-            margin: '0 auto'
-          }}>
-            Vi har arbetat med många ledande företag och event i Sverige
+          </m.h2>
+          <p style={{ fontSize: '1.1rem', color: 'var(--color-text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
+            Vi har arbetat med ledande företag och event i Stockholm och hela Sverige
           </p>
         </div>
 
-        <motion.div
+        <m.div
           variants={cardContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '2rem'
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateRows: 'auto auto',
+            gap: '1rem'
           }}
         >
-          {testimonials.map((item, idx) => (
-            <motion.div
+          {projects.map((project, idx) => (
+            <m.div
               key={idx}
               variants={cardItem}
-              className="testimonial-card"
-              whileHover={{ y: -4 }}
+              className="portfolio-card"
               style={{
-                background: 'var(--color-background-secondary)',
-                padding: '2rem',
-                borderRadius: '12px',
-                border: `1px solid var(--color-border-tertiary)`,
-                cursor: 'pointer'
+                gridColumn: idx === 0 ? 'span 2' : 'span 1',
+                height: idx === 0 ? '380px' : '240px'
               }}
             >
-              <div style={{ marginBottom: '1rem', display: 'flex', gap: '4px' }}>
-                {[...Array(item.rating)].map((_, i) => (
-                  <span key={i} style={{ color: colors.accent, fontSize: '1.3rem' }}>★</span>
-                ))}
+              {/* Swap this div for <Image src={project.src} alt={project.name} fill style={{objectFit:'cover'}} /> when ready */}
+              <div
+                className="portfolio-placeholder"
+                style={{
+                  width: '100%', height: '100%',
+                  display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center',
+                  gap: '0.5rem', color: colors.secondary
+                }}
+              >
+                <ImageIcon size={32} strokeWidth={1} />
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
+                  {project.name}
+                </span>
               </div>
-              <h3 style={{
-                fontSize: '1.15rem',
-                fontWeight: 700,
-                marginBottom: '0.5rem',
-                color: colors.dark
-              }}>
-                {item.name}
-              </h3>
-              <p style={{
-                color: 'var(--color-text-secondary)',
-                fontSize: '0.9rem'
-              }}>
-                {item.category}
-              </p>
-            </motion.div>
+
+              <div className="portfolio-overlay">
+                <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', marginBottom: '0.25rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                  {project.category}
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'white', fontWeight: 600, fontSize: '1rem' }}>{project.name}</span>
+                  <ExternalLink size={16} color="white" />
+                </div>
+              </div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
       </section>
 
       {/* CTA Section */}
@@ -643,5 +648,6 @@ export default function Home() {
         </div>
       </footer>
     </div>
+    </LazyMotion>
   );
 }
