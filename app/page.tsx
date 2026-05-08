@@ -1,11 +1,11 @@
 'use client'
 
-import React from 'react';
+import React, { useState } from 'react';
 import { LazyMotion, m } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 
 const loadFeatures = () => import('framer-motion').then(res => res.domAnimation);
-import { MapPin, Phone, Mail, CheckCircle, ArrowRight, Users, Zap, Building2, Layers, Wrench, CalendarDays, ImageIcon, Check, ExternalLink } from 'lucide-react';
+import { MapPin, Phone, Mail, CheckCircle, ArrowRight, Users, Zap, Building2, Layers, Wrench, CalendarDays, ImageIcon, Check, ExternalLink, X } from 'lucide-react';
 
 const heroContainer: Variants = {
   hidden: {},
@@ -50,7 +50,7 @@ export default function Home() {
     {
       id: 'signs',
       title: 'Skyltar & Vägvisare',
-      description: 'Högkvalitativa skyltar för företag och institutioner. Från design till montering.',
+      description: 'Högkvalitativa skyltar till företag och privatpersoner. Från design till montering.',
       Icon: Building2,
       features: ['Fasadskyltar', 'Belyst neon', 'Trä och metall']
     },
@@ -78,13 +78,30 @@ export default function Home() {
   ];
 
   const projects = [
-    { name: 'Telia Knight Event', category: 'Eventskyltning', src: null },
-    { name: 'Sverige Hockey', category: 'Sportarena', src: null },
+    { name: 'Telia Event montering', category: 'Eventskyltning', src: null },
+    { name: 'Sweden Hockey Games', category: 'Sportarena', src: null },
     { name: 'Fasadskylt, Södermalm', category: 'Fasadmontering', src: null },
     { name: 'Fönsterfoliering, Kungsholmen', category: 'Foliering', src: null },
     { name: 'Företagsevent', category: 'Tillfällig skyltning', src: null },
     { name: 'Skyltsystem, Vasastan', category: 'Vägvisningssystem', src: null },
   ];
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    namn: '', foretag: '', epost: '', telefon: '', tjanst: '', meddelande: ''
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSubmitted(false);
+    setFormData({ namn: '', foretag: '', epost: '', telefon: '', tjanst: '', meddelande: '' });
+  };
 
   return (
     <LazyMotion features={loadFeatures}>
@@ -161,6 +178,50 @@ export default function Home() {
           border-color: ${colors.accent};
           transition: border-color 0.2s ease;
         }
+
+        .modal-backdrop {
+          position: fixed; inset: 0; z-index: 100;
+          background: rgba(9, 44, 56, 0.55);
+          backdrop-filter: blur(4px);
+          display: flex; align-items: center; justify-content: center;
+          padding: 1rem;
+          animation: fadeIn 0.2s ease;
+        }
+        .modal-box {
+          background: var(--color-background-primary);
+          border-radius: 14px;
+          width: 100%; max-width: 540px;
+          padding: 2.5rem;
+          position: relative;
+          animation: slideUp 0.25s ease;
+          max-height: 90vh;
+          overflow-y: auto;
+        }
+        .modal-field {
+          display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.1rem;
+        }
+        .modal-field label {
+          font-size: 0.85rem; font-weight: 600;
+          color: var(--color-text-primary); letter-spacing: 0.2px;
+        }
+        .modal-field input, .modal-field select, .modal-field textarea {
+          padding: 10px 14px;
+          border: 1.5px solid var(--color-border-tertiary);
+          border-radius: 8px;
+          font-size: 0.95rem;
+          font-family: var(--font-sans);
+          color: var(--color-text-primary);
+          background: var(--color-background-primary);
+          transition: border-color 0.2s ease;
+          outline: none;
+        }
+        .modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus {
+          border-color: ${colors.primary};
+        }
+        .modal-field textarea { resize: vertical; min-height: 100px; }
+        .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: translateY(0) } }
       `}</style>
 
       {/* Header/Nav Bar */}
@@ -169,7 +230,12 @@ export default function Home() {
         borderBottom: `1px solid ${colors.light}`,
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        background: 'var(--color-background-primary)',
+        backdropFilter: 'blur(8px)'
       }}>
         <div style={{
           fontSize: '1.3rem',
@@ -184,6 +250,9 @@ export default function Home() {
           </a>
           <a href="#projects" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={e => (e.target as HTMLElement).style.color = colors.primary} onMouseLeave={e => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}>
             Projekt
+          </a>
+          <a href="#aboutus" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none', transition: 'color 0.3s' }} onMouseEnter={e => (e.target as HTMLElement).style.color = colors.primary} onMouseLeave={e => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}>
+            Om oss
           </a>
           <button className="primary-button" style={{ fontSize: '0.95rem', padding: '10px 24px' }}>
             Ring oss
@@ -250,7 +319,7 @@ export default function Home() {
               lineHeight: 1.7
             }}
           >
-            Vi skapar och monterar skyltar som får ditt företag att synas. Med över 15 års erfarenhet erbjuder vi allt från design till professionell installation i Stockholm och hela Sverige.
+            Vi monterar skyltar som får ditt företag att synas. Med över 25 års erfarenhet erbjuder vi professionell installation i Stockholm och hela Sverige.
           </m.p>
 
           <m.div
@@ -262,8 +331,8 @@ export default function Home() {
               flexWrap: 'wrap'
             }}
           >
-            <button className="accent-button">
-              Boka konsultation <ArrowRight size={18} />
+            <button className="accent-button" onClick={() => setModalOpen(true)}>
+              Maila oss <Mail size={18} />
             </button>
             <button style={{
               background: 'white',
@@ -283,7 +352,7 @@ export default function Home() {
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = colors.light; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'white'; }}
             >
-              <Phone size={18} /> 070-XXXXXXX
+              <Phone size={18} /> 070-8321225
             </button>
           </m.div>
 
@@ -294,7 +363,7 @@ export default function Home() {
           >
             <div className="trust-badge">
               <CheckCircle size={20} />
-              <span><strong>15+ år erfarenhet</strong> med skyltning och montering</span>
+              <span><strong>25+ år erfarenhet</strong> med skyltning och montering</span>
             </div>
             <div className="trust-badge">
               <Users size={20} />
@@ -302,7 +371,7 @@ export default function Home() {
             </div>
             <div className="trust-badge">
               <MapPin size={20} />
-              <span><strong>Stockholm hemort</strong>, serviceerar hela Sverige</span>
+              <span><strong>Stockholm hemort</strong>, monterar hela Sverige</span>
             </div>
           </m.div>
         </m.div>
@@ -370,7 +439,7 @@ export default function Home() {
               maxWidth: '600px',
               margin: '0 auto'
             }}>
-              Kompletta lösningar för all din skyltning och monteringsbehov
+              Kompletta lösningar för all skyltning och dina monteringsbehov
             </p>
           </div>
 
@@ -558,7 +627,7 @@ export default function Home() {
             lineHeight: 1.7,
             opacity: 0.95
           }}>
-            Kontakta oss för en kostnadsfri konsultation. Vi diskuterar ditt projekt, ger rekommendationer och presenterar prisalternativ.
+            Kontakta oss, vi diskuterar ditt projekt, ger rekommendationer och presenterar prisalternativ.
           </p>
           <div style={{
             display: 'flex',
@@ -566,8 +635,8 @@ export default function Home() {
             justifyContent: 'center',
             flexWrap: 'wrap'
           }}>
-            <button className="accent-button">
-              Boka konsultation
+            <button className="accent-button" onClick={() => setModalOpen(true)}>
+              Maila oss
             </button>
             <button style={{
               background: 'transparent',
@@ -584,7 +653,7 @@ export default function Home() {
             onMouseEnter={e => { (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.1)'; }}
             onMouseLeave={e => { (e.target as HTMLElement).style.background = 'transparent'; }}
             >
-              Ring 070-XXXXXXX
+              Ring 070-8321225
             </button>
           </div>
         </div>
@@ -608,11 +677,11 @@ export default function Home() {
             <h3 style={{ fontWeight: 700, marginBottom: '1rem', color: colors.primary }}>Kontakt</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
               <Phone size={18} style={{ color: colors.accent }} />
-              <span>070-XXXXXXX</span>
+              <span>070-8321225</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <Mail size={18} style={{ color: colors.accent }} />
-              <span>info@skyltar.se</span>
+              <span>skyltaromontering@gmail.com</span>
             </div>
           </div>
 
@@ -644,9 +713,118 @@ export default function Home() {
           color: 'var(--color-text-secondary)',
           fontSize: '0.9rem'
         }}>
-          <p>© 2024 Skyltar & Montering. Baserat i Stockholm • Serviceerar hela Sverige</p>
+          <p>© 2026 Skyltar O Montering. Baserat i Stockholm • Monterar hela Sverige</p>
         </div>
       </footer>
+      {/* Contact Modal */}
+      {modalOpen && (
+        <div className="modal-backdrop" onClick={closeModal}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <button
+              onClick={closeModal}
+              style={{
+                position: 'absolute', top: '1.25rem', right: '1.25rem',
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'var(--color-text-secondary)', padding: '4px'
+              }}
+            >
+              <X size={20} />
+            </button>
+
+            {submitted ? (
+              <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                <CheckCircle size={48} style={{ color: colors.primary, marginBottom: '1rem' }} />
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: colors.dark, marginBottom: '0.5rem' }}>
+                  Tack för ditt meddelande!
+                </h3>
+                <p style={{ color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
+                  Vi återkommer inom 1 arbetsdag.
+                </p>
+              </div>
+            ) : (
+              <>
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: colors.dark, marginBottom: '0.25rem' }}>
+                  Skicka en förfrågan
+                </h2>
+                <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', marginBottom: '1.75rem' }}>
+                  Beskriv ditt projekt så återkommer vi inom 1 arbetsdag.
+                </p>
+
+                <form onSubmit={handleSubmit}>
+                  <div className="modal-row">
+                    <div className="modal-field">
+                      <label>Namn *</label>
+                      <input
+                        type="text" required placeholder="Anna Svensson"
+                        value={formData.namn}
+                        onChange={e => setFormData(p => ({ ...p, namn: e.target.value }))}
+                      />
+                    </div>
+                    <div className="modal-field">
+                      <label>Företag</label>
+                      <input
+                        type="text" placeholder="Företag AB"
+                        value={formData.foretag}
+                        onChange={e => setFormData(p => ({ ...p, foretag: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="modal-row">
+                    <div className="modal-field">
+                      <label>E-post *</label>
+                      <input
+                        type="email" required placeholder="anna@foretag.se"
+                        value={formData.epost}
+                        onChange={e => setFormData(p => ({ ...p, epost: e.target.value }))}
+                      />
+                    </div>
+                    <div className="modal-field">
+                      <label>Telefon</label>
+                      <input
+                        type="tel" placeholder="070-000 00 00"
+                        value={formData.telefon}
+                        onChange={e => setFormData(p => ({ ...p, telefon: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="modal-field">
+                    <label>Tjänst</label>
+                    <select
+                      value={formData.tjanst}
+                      onChange={e => setFormData(p => ({ ...p, tjanst: e.target.value }))}
+                    >
+                      <option value="">Välj tjänst...</option>
+                      <option value="skyltar">Skyltar & Vägvisare</option>
+                      <option value="foliering">Skyltning & Foliering</option>
+                      <option value="montering">Montering & Installation</option>
+                      <option value="event">Event & Tillfällig Skyltning</option>
+                    </select>
+                  </div>
+
+                  <div className="modal-field">
+                    <label>Meddelande *</label>
+                    <textarea
+                      required placeholder="Beskriv ditt projekt – vad behöver du, var finns det, när ska det vara klart?"
+                      value={formData.meddelande}
+                      onChange={e => setFormData(p => ({ ...p, meddelande: e.target.value }))}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="primary-button"
+                    style={{ width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}
+                  >
+                    Skicka förfrågan <Mail size={18} />
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
     </LazyMotion>
   );
